@@ -1,53 +1,36 @@
 import React from 'react'
 
-import { getPokemonList } from './helpers/client'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from 'react-router-dom';
 
 import Navbar from './components/Navbar/NavBar';
 import PokemonList from './components/PokemonList/PokemonList';
+import PokemonDetail from './components/PokemonDetail/PokemonDetail';
 
-export default class App extends React.Component {
-  constructor(props) {
-    super(props);
+export default function App(props) {
+  const pokemonsListBasePath = '/pokemons';
 
-    this.state = {
-      pokemons: [],
-      isLoading: false,
-      isError: false,
-    };
-  }
+  return (
+    <React.Fragment>
+      <Navbar />
 
-  componentDidMount() {
-    this.setState({ isFetching: true, });
+      <div className="container" style={{paddingTop: '65px'}}>
+        <Router>
+          <Switch>
+            <Route path={`${pokemonsListBasePath}/:id`} component={PokemonDetail} />
 
-    getPokemonList()
-      .then(res => {
-        this.setState({ isFetching: false, pokemons: res.data.results, });
-      })
-      .catch(err => {
-        this.setState({ isFetching: false, isError: true, });
-      });
-  }
+            <Route exact path={pokemonsListBasePath} component={PokemonList}></Route>
 
-  render() {
-    return (
-      <React.Fragment>
-        <Navbar />
-
-        <div className='container' style={{paddingTop: '65px'}}>
-          {
-            this.state.isError &&
-            <div className="alert alert-danger" role="alert">
-              Failed to fetch the Pokemons. Please reload the page.
-            </div>
-          }
-
-          {
-           this.state.isFetching
-             ? <h1>Fetcing Pokemons, please wait...</h1>
-             : <PokemonList pokemons={this.state.pokemons} />
-          }
-        </div>
-      </React.Fragment>
-    );
-  }
+            <Route>
+              <Redirect to={pokemonsListBasePath} />
+            </Route>
+          </Switch>
+        </Router>
+      </div>
+    </React.Fragment>
+  );
 }

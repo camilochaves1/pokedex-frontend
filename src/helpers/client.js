@@ -5,8 +5,8 @@ const instance = axios.create({
   headers: {'Content-Type': 'application/json'}
 });
 
-const getPokemonList = (offest = 0, limit = 20) => {
-  return instance.get('/pokemons', { params: { offest, limit } });
+const getPokemonList = (offset = 0, limit = 20) => {
+  return instance.get('/pokemons', { params: { offset, limit } });
 };
 
 const getPokemonDetail = (pokemonId = 1) => {
